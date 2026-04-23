@@ -1,4 +1,4 @@
-"""Shared BM25 + SQuAD(v2) utilities.
+"""Shared BM25 + QA dataset utilities.
 
 Hard-coded defaults (edit here if you want to tune BM25):
 - K1, B: BM25 parameters
@@ -35,11 +35,15 @@ def tokenize(text: str) -> List[str]:
 
 
 @dataclass(frozen=True)
-class SquadDoc:
+class QADoc:
     doc_id: int
     title: str
     para_id: int
     context: str
+
+
+# Backward compatibility for older pickled indexes created before QADoc was introduced.
+SquadDoc = QADoc
 
 
 class BM25Retriever:
@@ -53,7 +57,7 @@ class BM25Retriever:
         self.k1 = float(k1)
         self.b = float(b)
 
-        self._docs: List[SquadDoc] = []
+        self._docs: List[QADoc] = []
         self._doc_len: List[int] = []
         self._avgdl: float = 0.0
         self._N: int = 0
@@ -68,10 +72,10 @@ class BM25Retriever:
         return self._N
 
     @property
-    def docs(self) -> Sequence[SquadDoc]:
+    def docs(self) -> Sequence[QADoc]:
         return self._docs
 
-    def add_documents(self, docs: Sequence[SquadDoc]) -> None:
+    def add_documents(self, docs: Sequence[QADoc]) -> None:
         self._docs = list(docs)
         self._N = len(self._docs)
         if self._N == 0:
@@ -122,7 +126,7 @@ class BM25Retriever:
 
         return dict(scores)
 
-    def retrieve(self, query: str, *, topk: int = TOPK) -> List[Tuple[SquadDoc, float]]:
+    def retrieve(self, query: str, *, topk: int = TOPK) -> List[Tuple[QADoc, float]]:
         if topk <= 0:
             raise ValueError("topk must be > 0")
 
@@ -163,7 +167,7 @@ class BM25Retriever:
         return bm25
 
 
-def load_squad_v2_paragraphs(squad_path: Path) -> Tuple[List[SquadDoc], List[Dict[str, Any]]]:
+def load_squad_v2_paragraphs(squad_path: Path) -> Tuple[List[QADoc], List[Dict[str, Any]]]:
     """Return (docs, qas).
 
     - docs: paragraph contexts turned into SquadDoc with stable doc_id
@@ -179,7 +183,7 @@ def load_squad_v2_paragraphs(squad_path: Path) -> Tuple[List[SquadDoc], List[Dic
     if not isinstance(data, list):
         raise ValueError("Invalid SQuAD file: missing 'data' list")
 
-    docs: List[SquadDoc] = []
+    docs: List[QADoc] = []
     qas: List[Dict[str, Any]] = []
 
     doc_id = 0
@@ -194,7 +198,7 @@ def load_squad_v2_paragraphs(squad_path: Path) -> Tuple[List[SquadDoc], List[Dic
             if not isinstance(context, str) or not context.strip():
                 continue
 
-            docs.append(SquadDoc(doc_id=doc_id, title=title, para_id=para_id, context=context))
+            docs.append(QADoc(doc_id=doc_id, title=title, para_id=para_id, context=context))
 
             qa_items = para.get("qas")
             if isinstance(qa_items, list):
@@ -259,3 +263,64 @@ def default_squad_path() -> Path:
 
 def default_index_path() -> Path:
     return _THIS_DIR / "bm25_squad_dev_index.pkl"
+
+
+def load_pubmedqa_documents(pubmedqa_path: Path) -> Tuple[List[QADoc], List[Dict[str, Any]]]:
+    """Return (docs, qas) for PubMedQA.
+
+    Each PubMedQA example becomes one retrievable document by joining its abstract
+    contexts into a single passage. The returned qas list matches the shape used by
+    the SQuAD pipeline so the same sparse retriever / RAG code can consume it.
+    """
+
+    with pubmedqa_path.open("r", encoding="utf-8") as f:
+        dataset = json.load(f)
+
+    if not isinstance(dataset, dict):
+        raise ValueError("Invalid PubMedQA file: expected a top-level object keyed by PMID")
+
+    docs: List[QADoc] = []
+    qas: List[Dict[str, Any]] = []
+
+    for doc_id, (pmid, info) in enumerate(dataset.items()):
+        if not isinstance(info, dict):
+            continue
+
+        question = info.get("QUESTION")
+        contexts = info.get("CONTEXTS")
+        if not isinstance(question, str) or not question.strip():
+            continue
+        if not isinstance(contexts, list):
+            continue
+
+        context_parts = [str(part).strip() for part in contexts if isinstance(part, str) and part.strip()]
+        if not context_parts:
+            continue
+
+        merged_context = "\n\n".join(context_parts)
+        docs.append(QADoc(doc_id=doc_id, title=str(pmid), para_id=0, context=merged_context))
+
+        qas.append(
+            {
+                "id": pmid,
+                "question": question,
+                "title": str(pmid),
+                "para_id": 0,
+                "context_doc_id": doc_id,
+                "final_decision": info.get("final_decision"),
+                "long_answer": info.get("LONG_ANSWER"),
+            }
+        )
+
+    if not docs:
+        raise ValueError("No PubMedQA documents found")
+
+    return docs, qas
+
+
+def default_pubmedqa_path() -> Path:
+    return _PROJECT_ROOT / "data" / "PubMedQA" / "data" / "ori_pqal.json"
+
+
+def default_pubmedqa_index_path() -> Path:
+    return _THIS_DIR / "bm25_pubmedqa_index.pkl"
