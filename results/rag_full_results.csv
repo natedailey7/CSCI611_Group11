@@ -1,0 +1,7 @@
+Scenario,Type,LLM-Only F1,BM25 Recall@K,Dense Recall@K,BM25-RAG F1,Dense-RAG F1
+A: SQuAD->SQuAD,in-domain,0.0278,0.75,0.925,0.1178,0.1256
+B: NQ->NQ,in-domain,0.0404,0.015,0.015,0.0374,0.0409
+C: Trivia->Trivia,in-domain,0.0401,0.255,0.325,0.066,0.0595
+D: SQuAD->NQ,cross-domain,0.0278,0.015,0.005,0.0355,0.0295
+E: SQuAD->Trivia,cross-domain,0.0278,0.055,0.05,0.0342,0.0264
+F: Trivia->SQuAD,cross-domain,0.0401,0.025,0.07,0.0321,0.0324

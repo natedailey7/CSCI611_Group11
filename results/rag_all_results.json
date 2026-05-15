@@ -1,0 +1,218 @@
+{
+  "bm25_retrieval": {
+    "A_squad_squad": {
+      "label": "BM25 | SQuAD->SQuAD",
+      "recall@k": 0.75,
+      "mrr": 0.5838,
+      "n": 200
+    },
+    "B_nq_nq": {
+      "label": "BM25 | NQ->NQ",
+      "recall@k": 0.015,
+      "mrr": 0.0048,
+      "n": 200
+    },
+    "C_trivia_trivia": {
+      "label": "BM25 | Trivia->Trivia",
+      "recall@k": 0.255,
+      "mrr": 0.172,
+      "n": 200
+    },
+    "D_squad_nq": {
+      "label": "BM25 | SQuAD->NQ",
+      "recall@k": 0.015,
+      "mrr": 0.0092,
+      "n": 200
+    },
+    "E_squad_trivia": {
+      "label": "BM25 | SQuAD->Trivia",
+      "recall@k": 0.055,
+      "mrr": 0.031,
+      "n": 200
+    },
+    "F_trivia_squad": {
+      "label": "BM25 | Trivia->SQuAD",
+      "recall@k": 0.025,
+      "mrr": 0.0192,
+      "n": 200
+    }
+  },
+  "dense_retrieval": {
+    "A_squad_squad": {
+      "label": "Dense | SQuAD->SQuAD",
+      "recall@k": 0.925,
+      "mrr": 0.7924,
+      "n": 200
+    },
+    "B_nq_nq": {
+      "label": "Dense | NQ->NQ",
+      "recall@k": 0.015,
+      "mrr": 0.0075,
+      "n": 200
+    },
+    "C_trivia_trivia": {
+      "label": "Dense | Trivia->Trivia",
+      "recall@k": 0.325,
+      "mrr": 0.2458,
+      "n": 200
+    },
+    "D_squad_nq": {
+      "label": "Dense | SQuAD->NQ",
+      "recall@k": 0.005,
+      "mrr": 0.0012,
+      "n": 200
+    },
+    "E_squad_trivia": {
+      "label": "Dense | SQuAD->Trivia",
+      "recall@k": 0.05,
+      "mrr": 0.0209,
+      "n": 200
+    },
+    "F_trivia_squad": {
+      "label": "Dense | Trivia->SQuAD",
+      "recall@k": 0.07,
+      "mrr": 0.0435,
+      "n": 200
+    }
+  },
+  "llm_only": {
+    "squad": {
+      "label": "LLM-Only | SQuAD",
+      "em": 0.0,
+      "f1": 0.0278,
+      "n": 200
+    },
+    "nq": {
+      "label": "LLM-Only | NQ",
+      "em": 0.0,
+      "f1": 0.0404,
+      "n": 200
+    },
+    "trivia": {
+      "label": "LLM-Only | TriviaQA",
+      "em": 0.01,
+      "f1": 0.0401,
+      "n": 200
+    }
+  },
+  "bm25_rag": {
+    "A": {
+      "label": "BM25-RAG | SQuAD->SQuAD",
+      "recall@k": 0.75,
+      "em": 0.03,
+      "f1": 0.1178,
+      "n": 200
+    },
+    "B": {
+      "label": "BM25-RAG | NQ->NQ",
+      "recall@k": 0.015,
+      "em": 0.0,
+      "f1": 0.0374,
+      "n": 200
+    },
+    "C": {
+      "label": "BM25-RAG | Trivia->Trivia",
+      "recall@k": 0.255,
+      "em": 0.025,
+      "f1": 0.066,
+      "n": 200
+    },
+    "D": {
+      "label": "BM25-RAG | SQuAD->NQ",
+      "recall@k": 0.015,
+      "em": 0.0,
+      "f1": 0.0355,
+      "n": 200
+    },
+    "E": {
+      "label": "BM25-RAG | SQuAD->Trivia",
+      "recall@k": 0.055,
+      "em": 0.0,
+      "f1": 0.0342,
+      "n": 200
+    },
+    "F": {
+      "label": "BM25-RAG | Trivia->SQuAD",
+      "recall@k": 0.025,
+      "em": 0.01,
+      "f1": 0.0321,
+      "n": 200
+    }
+  },
+  "dense_rag": {
+    "A": {
+      "label": "Dense-RAG | SQuAD->SQuAD",
+      "recall@k": 0.925,
+      "em": 0.015,
+      "f1": 0.1256,
+      "n": 200
+    },
+    "B": {
+      "label": "Dense-RAG | NQ->NQ",
+      "recall@k": 0.015,
+      "em": 0.0,
+      "f1": 0.0409,
+      "n": 200
+    },
+    "C": {
+      "label": "Dense-RAG | Trivia->Trivia",
+      "recall@k": 0.325,
+      "em": 0.01,
+      "f1": 0.0595,
+      "n": 200
+    },
+    "D": {
+      "label": "Dense-RAG | SQuAD->NQ",
+      "recall@k": 0.005,
+      "em": 0.0,
+      "f1": 0.0295,
+      "n": 200
+    },
+    "E": {
+      "label": "Dense-RAG | SQuAD->Trivia",
+      "recall@k": 0.05,
+      "em": 0.0,
+      "f1": 0.0264,
+      "n": 200
+    },
+    "F": {
+      "label": "Dense-RAG | Trivia->SQuAD",
+      "recall@k": 0.07,
+      "em": 0.01,
+      "f1": 0.0324,
+      "n": 200
+    }
+  },
+  "failure_analysis": {
+    "A_squad": {
+      "label": "Dense | SQuAD->SQuAD",
+      "retrieval_fail_pct": 7.5,
+      "generation_fail_pct": 86.0,
+      "success_pct": 6.5
+    },
+    "B_nq": {
+      "label": "Dense | NQ->NQ",
+      "retrieval_fail_pct": 98.5,
+      "generation_fail_pct": 1.5,
+      "success_pct": 0.0
+    },
+    "C_trivia": {
+      "label": "Dense | Trivia->Trivia",
+      "retrieval_fail_pct": 67.5,
+      "generation_fail_pct": 29.5,
+      "success_pct": 3.0
+    },
+    "E_cross": {
+      "label": "Dense | SQuAD->Trivia",
+      "retrieval_fail_pct": 95.0,
+      "generation_fail_pct": 5.0,
+      "success_pct": 0.0
+    },
+    "F_cross": {
+      "label": "Dense | Trivia->SQuAD",
+      "retrieval_fail_pct": 93.0,
+      "generation_fail_pct": 7.0,
+      "success_pct": 0.0
+    }
+  }
+}
